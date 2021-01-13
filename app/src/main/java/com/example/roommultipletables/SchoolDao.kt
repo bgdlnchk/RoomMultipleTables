@@ -3,7 +3,9 @@ package com.example.roommultipletables
 import androidx.room.*
 import com.example.roommultipletables.entities.Director
 import com.example.roommultipletables.entities.School
-import com.example.roommultipletables.entities.SchoolAndDirector
+import com.example.roommultipletables.entities.Student
+import com.example.roommultipletables.entities.Subject
+import com.example.roommultipletables.relations.*
 
 @Dao
 interface SchoolDao {
@@ -14,7 +16,28 @@ interface SchoolDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDirector(director: Director)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertStudent(student: Student)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSubject(subject: Subject)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertStudentSubjectCrossRef(crossRef: StudentSubjectCrossRef)
+
     @Transaction
     @Query("SELECT * FROM school WHERE schoolName = :schoolName")
-    suspend fun getSchoolAndDirector(schoolName: String): List<SchoolAndDirector>
+    suspend fun getSchoolAndDirectorWithSchoolName(schoolName: String): List<SchoolAndDirector>
+
+    @Transaction
+    @Query("SELECT * FROM school WHERE schoolName = :schoolName")
+    suspend fun getSchoolWithStudents(schoolName: String): List<SchoolWithStudents>
+
+    @Transaction
+    @Query("SELECT * FROM subject WHERE subjectName = :subjectName")
+    suspend fun getStudentsOfSubject(subjectName: String): List<SubjectWithStudents>
+
+    @Transaction
+    @Query("SELECT * FROM student WHERE studentName = :studentName")
+    suspend fun getSubjectsOfStudent(studentName: String): List<StudentWithSubjects>
 }
